@@ -23,6 +23,8 @@ my-react-app/
 │   │   ├── AppointmentBooking.jsx
 │   │   ├── AppointmentManagement.jsx
 │   │   ├── CallToAction.jsx
+|   |   |——— EmergencyContacts.jsx
+|   |   |——— SOSAlert.jsx
 │   │   ├── Footer.jsx
 │   │   ├── HeroImage.jsx
 │   │   ├── MedicationReminders.jsx
