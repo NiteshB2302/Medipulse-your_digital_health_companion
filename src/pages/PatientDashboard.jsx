@@ -9,7 +9,11 @@ import { toast } from '@/components/ui/use-toast';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import AppointmentBooking from '@/components/AppointmentBooking';
 import MedicationReminders from '@/components/MedicationReminders';
-import { QrCode, Calendar, Pill, FileText, User, LogOut } from 'lucide-react';
+// START: SOS Alert System Integration
+import SOSAlert from '../components/SOSAlert';
+import EmergencyContacts from '../components/EmergencyContacts';
+// END: SOS Alert System Integration
+import { QrCode, Calendar, Pill, FileText, User, LogOut, AlertTriangle } from 'lucide-react';
 
 const PatientDashboard = () => {
   const { user, logout } = useAuth();
@@ -75,29 +79,22 @@ const PatientDashboard = () => {
             </div>
 
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-5">
+              {/* START: SOS Alert System Integration */}
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="qr-code">QR Code</TabsTrigger>
                 <TabsTrigger value="appointments">Appointments</TabsTrigger>
                 <TabsTrigger value="medications">Medications</TabsTrigger>
                 <TabsTrigger value="records">Records</TabsTrigger>
+                <TabsTrigger value="sos" className="text-red-600 data-[state=active]:bg-red-500 data-[state=active]:text-white">
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  SOS
+                </TabsTrigger>
               </TabsList>
+              {/* END: SOS Alert System Integration */}
 
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card className="health-card">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-                      <Calendar className="h-4 w-4 text-blue-600" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{appointments.length}</div>
-                      <p className="text-xs text-gray-600">
-                        {appointments.filter(apt => apt.status === 'pending').length} pending
-                      </p>
-                    </CardContent>
-                  </Card>
-
                   <Card className="health-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Prescriptions</CardTitle>
@@ -135,36 +132,42 @@ const PatientDashboard = () => {
                 </div>
 
                 {patientData && (
-                  <Card className="health-card">
-                    <CardHeader>
-                      <CardTitle>Patient Information</CardTitle>
-                      <CardDescription>Your registered health information</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Age</p>
-                          <p className="text-lg">{patientData.age || 'Not specified'}</p>
+                  <div className="space-y-6">
+                    <Card className="health-card">
+                      <CardHeader>
+                        <CardTitle>Patient Information</CardTitle>
+                        <CardDescription>Your registered health information</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">Age</p>
+                            <p className="text-lg">{patientData.age || 'Not specified'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">Gender</p>
+                            <p className="text-lg capitalize">{patientData.gender || 'Not specified'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">Contact</p>
+                            <p className="text-lg">{patientData.contact || 'Not specified'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">Medical History</p>
+                            <p className="text-lg">{patientData.medicalHistory || 'None recorded'}</p>
+                          </div>
+                          <div className="md:col-span-2">
+                            <p className="text-sm font-medium text-gray-500">Allergies</p>
+                            <p className="text-lg">{patientData.allergies || 'None recorded'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Gender</p>
-                          <p className="text-lg capitalize">{patientData.gender || 'Not specified'}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Contact</p>
-                          <p className="text-lg">{patientData.contact || 'Not specified'}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Medical History</p>
-                          <p className="text-lg">{patientData.medicalHistory || 'None recorded'}</p>
-                        </div>
-                        <div className="md:col-span-2">
-                          <p className="text-sm font-medium text-gray-500">Allergies</p>
-                          <p className="text-lg">{patientData.allergies || 'None recorded'}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+
+                    {/* START: SOS Alert System Integration */}
+                    <EmergencyContacts patientId={user.id} />
+                    {/* END: SOS Alert System Integration */}
+                  </div>
                 )}
               </TabsContent>
 
@@ -211,6 +214,12 @@ const PatientDashboard = () => {
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              {/* START: SOS Alert System Integration */}
+              <TabsContent value="sos">
+                <SOSAlert patientId={user.id} patientName={user.name} />
+              </TabsContent>
+              {/* END: SOS Alert System Integration */}
             </Tabs>
           </motion.div>
         </div>
