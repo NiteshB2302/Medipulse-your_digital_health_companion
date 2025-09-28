@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Heart, User, Mail, Lock, UserCheck } from 'lucide-react';
+import { Heart, User, Mail, Lock, UserCheck, Phone } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +22,10 @@ const Register = () => {
     medicalHistory: '',
     allergies: '',
     specialization: '',
-    licenseNumber: ''
+    licenseNumber: '',
+    // START: SOS Alert System Integration
+    emergencyContact: ''
+    // END: SOS Alert System Integration
   });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -188,6 +191,25 @@ const Register = () => {
                         />
                       </div>
                     </div>
+
+                    {/* START: SOS Alert System Integration */}
+                    <div className="space-y-2">
+                      <Label htmlFor="emergencyContact">Emergency Contact (Optional)</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="emergencyContact"
+                          placeholder="Emergency contact phone number"
+                          value={formData.emergencyContact}
+                          onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        This contact will be notified in case of emergency
+                      </p>
+                    </div>
+                    {/* END: SOS Alert System Integration */}
                     
                     <div className="space-y-2">
                       <Label htmlFor="medicalHistory">Medical History</Label>
